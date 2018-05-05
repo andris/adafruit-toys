@@ -10,6 +10,7 @@ from pulseio import PWMOut
 import audioio
 import touchio
 import simpleio
+import random
 
 
 # One pixel connected internally!
@@ -25,11 +26,9 @@ buzzer.frequency = 262
 OFF = 0
 ON = 2**15
 
-audiofiles = ["rimshot.wav", "laugh.wav"]
-
 # Digital input with pullup on D2, D3, D4, D5, D6
 buttons = []
-for p in [board.D2, board.D3, board.D4, board.D5, board.D6]:
+for p in [board.D2, board.D3]:
     button = DigitalInOut(p)
     button.direction = Direction.INPUT
     button.pull = Pull.UP
@@ -38,7 +37,7 @@ for p in [board.D2, board.D3, board.D4, board.D5, board.D6]:
 
 # Digital output  on D8, D9, D10, D11, D12
 buttonLeds = []
-for p in [board.D8, board.D9, board.D10, board.D11, board.D12]:
+for p in [board.D8, board.D9]:
     buttonLed = DigitalInOut(p)
     buttonLed.direction = Direction.OUTPUT
     buttonLeds.append(buttonLed)
@@ -63,54 +62,38 @@ def wheel(pos):
         pos -= 170
         return [0, int(pos*3), int(255 - pos*3)]
 
-
-def play_file(filename):
-    print("playing file "+filename)
-    f = open(filename, "rb")
-    a = audioio.AudioOut(board.A0, f)
-    a.play()
-    while a.playing:
-        pass
-    print("finished")
     
 ######################### MAIN LOOP ##############################
 
+
+
+# randomize the starting button
+activeButtonId = random.randint(0,1)
+
 i = 0
 while True:
-  # spin internal LED around! autoshow is on
+  # spin internal neopixel LED around for pretty lightssss
   dot[0] = wheel(i & 255)
 
-  for buttonLed in buttonLeds:
-    if i < 125:
-      buttonLed.value = True
-    else:
-      buttonLed.value = False
+  activeButton = buttons[activeButtonId]
+  activeButtonLed = buttonLeds[activeButtonId]
+
+  if i < 125:
+    activeButtonLed.value = True
+  else:
+    activeButtonLed.value = False
 
   # if i < 125:
   #   buzzer.duty_cycle = ON
   # else:
   #   buzzer.duty_cycle = OFF
 
-  # print(buttonLed.value)
-
-  if not buttons[0].value:
-      print("Button D2 pressed!", end ="\t")
-      play_file(audiofiles[1])
-
-  if not buttons[1].value:
-      print("Button D3 pressed!", end ="\t")
-
-  if not buttons[2].value:
-      print("Button D4 pressed!", end ="\t")
-  
-  if not buttons[3].value:
-      print("Button D5 pressed!", end ="\t")
-
-  if not buttons[4].value:
-      print("Button D6 pressed!", end ="\t")
-
+  if not activeButton.value:
+    activeButtonId = random.randint(0,1)
+    activeButtonLed.value = False
+    time.sleep(1.2)
 
   i = (i+1) % 256  # run from 0 to 255
   #time.sleep(0.01) # make bigger to slow down
 
-  print("")
+  # print("")
