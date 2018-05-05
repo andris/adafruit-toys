@@ -25,6 +25,8 @@ buzzer.frequency = 262
 OFF = 0
 ON = 2**15
 
+audiofiles = ["rimshot.wav", "laugh.wav"]
+
 # Digital input with pullup on D2, D3, D4, D5, D6
 buttons = []
 for p in [board.D2, board.D3, board.D4, board.D5, board.D6]:
@@ -61,6 +63,15 @@ def wheel(pos):
         pos -= 170
         return [0, int(pos*3), int(255 - pos*3)]
 
+
+def play_file(filename):
+    print("playing file "+filename)
+    f = open(filename, "rb")
+    a = audioio.AudioOut(board.A0, f)
+    a.play()
+    while a.playing:
+        pass
+    print("finished")
     
 ######################### MAIN LOOP ##############################
 
@@ -84,6 +95,7 @@ while True:
 
   if not buttons[0].value:
       print("Button D2 pressed!", end ="\t")
+      play_file(audiofiles[1])
 
   if not buttons[1].value:
       print("Button D3 pressed!", end ="\t")
