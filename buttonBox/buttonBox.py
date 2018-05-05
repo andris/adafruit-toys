@@ -6,6 +6,7 @@ import time
 import neopixel
 from digitalio import DigitalInOut, Direction, Pull
 from analogio import AnalogIn
+from pulseio import PWMOut
 import audioio
 import touchio
 import simpleio
@@ -17,6 +18,12 @@ dot = neopixel.NeoPixel(board.NEOPIXEL, 1, brightness=0.2)
 # Built in red LED
 led = DigitalInOut(board.D13)
 led.direction = Direction.OUTPUT
+
+# pizeo buzzer
+buzzer = PWMOut(board.D7, variable_frequency=True)
+buzzer.frequency = 262
+OFF = 0
+ON = 2**15
 
 # Digital input with pullup on D2, D3, D4, D5, D6
 buttons = []
@@ -30,9 +37,9 @@ for p in [board.D2, board.D3, board.D4, board.D5, board.D6]:
 # Digital output  on D8, D9, D10, D11, D12
 buttonLeds = []
 for p in [board.D8, board.D9, board.D10, board.D11, board.D12]:
-    led = DigitalInOut(p)
-    led.direction = Direction.OUTPUT
-    buttonLeds.append(led)
+    buttonLed = DigitalInOut(p)
+    buttonLed.direction = Direction.OUTPUT
+    buttonLeds.append(buttonLed)
 
 ######################### HELPERS ##############################
 
@@ -62,11 +69,18 @@ while True:
   # spin internal LED around! autoshow is on
   dot[0] = wheel(i & 255)
 
-  for led in buttonLeds:
+  for buttonLed in buttonLeds:
     if i < 125:
-      led.value = True
+      buttonLed.value = True
     else:
-      led.Value = False
+      buttonLed.value = False
+
+  # if i < 125:
+  #   buzzer.duty_cycle = ON
+  # else:
+  #   buzzer.duty_cycle = OFF
+
+  # print(buttonLed.value)
 
   if not buttons[0].value:
       print("Button D2 pressed!", end ="\t")
