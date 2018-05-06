@@ -14,7 +14,7 @@ import random
 
 
 # One pixel connected internally!
-dot = neopixel.NeoPixel(board.NEOPIXEL, 1, brightness=0.2)
+dot = neopixel.NeoPixel(board.NEOPIXEL, 1, brightness=0.08)
 
 # pizeo buzzer
 buzzer = PWMOut(board.D5, variable_frequency=True)
@@ -58,13 +58,28 @@ def wheel(pos):
         pos -= 170
         return [0, int(pos*3), int(255 - pos*3)]
 
-    
+
+def playTune(speaker):
+  # tone 1
+  speaker.frequency = 494
+  speaker.duty_cycle = ON
+  time.sleep(.5)
+
+  speaker.frequency = 444
+  time.sleep(.5)
+
+  # tone 3
+  speaker.frequency = 494
+  time.sleep(.5)
+
+  speaker.duty_cycle = OFF
+
 ######################### MAIN LOOP ##############################
 
 
 
 # randomize the starting button
-activeButtonId = random.randint(0,1)
+activeButtonId = random.randint(0,2)
 
 i = 0
 while True:
@@ -79,15 +94,11 @@ while True:
   else:
     activeButtonLed.value = False
 
-  # if i < 125:
-  #   buzzer.duty_cycle = ON
-  # else:
-  #   buzzer.duty_cycle = OFF
-
   if not activeButton.value:
-    activeButtonId = random.randint(0,1)
+    activeButtonId = random.randint(0,2)
     activeButtonLed.value = False
-    time.sleep(1.2)
+    playTune(buzzer)
+    time.sleep(.7)
 
   i = (i+1) % 256  # run from 0 to 255
   #time.sleep(0.01) # make bigger to slow down
