@@ -1,6 +1,3 @@
-# Metro IO demo
-# Welcome to CircuitPython 2.2.0 :)
-
 import board
 import time
 import neopixel
