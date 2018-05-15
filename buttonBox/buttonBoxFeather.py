@@ -1,3 +1,6 @@
+# Metro IO demo
+# Welcome to CircuitPython 2.2.0 :)
+
 import board
 import time
 import neopixel
@@ -21,7 +24,7 @@ ON = 2**15
 
 # Digital input with pullup on D2, D3, D4, D5, D6
 buttons = []
-for p in [board.D6, board.D9, board.D10]:
+for p in [board.D6, board.D9, board.D10, board.A3, board.A4]:
     button = DigitalInOut(p)
     button.direction = Direction.INPUT
     button.pull = Pull.UP
@@ -30,7 +33,7 @@ for p in [board.D6, board.D9, board.D10]:
 
 # Digital output  on D8, D9, D10, D11, D12
 buttonLeds = []
-for p in [board.D11, board.D12, board.D13]:
+for p in [board.D11, board.D12, board.D13, board.A1, board.A2]:
     buttonLed = DigitalInOut(p)
     buttonLed.direction = Direction.OUTPUT
     buttonLeds.append(buttonLed)
@@ -76,7 +79,7 @@ def playTune(speaker):
 
 
 # randomize the starting button
-activeButtonId = random.randint(0,2)
+activeButtonId = random.randint(0,4)
 
 i = 0
 while True:
@@ -92,7 +95,7 @@ while True:
     activeButtonLed.value = False
 
   if not activeButton.value:
-    activeButtonId = random.randint(0,2)
+    activeButtonId = random.randint(0,4)
     activeButtonLed.value = False
     playTune(buzzer)
     time.sleep(.7)
