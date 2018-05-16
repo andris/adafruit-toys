@@ -76,7 +76,9 @@ def playTune(speaker):
 
 ######################### MAIN LOOP ##############################
 
-
+randomSeedPin = AnalogIn(board.A0)
+random.seed(randomSeedPin.value)
+randomSeedPin.deinit()
 
 # randomize the starting button
 activeButtonId = random.randint(0,4)
