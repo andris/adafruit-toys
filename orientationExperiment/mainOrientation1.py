@@ -1,5 +1,6 @@
 # Simple demo of the LSM9DS1 accelerometer, magnetometer, gyroscope.
 # Will print the acceleration, magnetometer, and gyroscope values every second.
+# foo
 import time
  
 import board
